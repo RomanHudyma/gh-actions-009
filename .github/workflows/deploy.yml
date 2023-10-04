@@ -53,6 +53,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: Production
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -63,12 +66,17 @@ jobs:
           path: ./dist
       - name: Output contents
         run: ls
+      - name: Get AWS permissions
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::697752395233:role/gh-actions
+          aws-region: eu-north-1
       - name: Deploy site
         id: deploy
         uses: ./.github/actions/deploy-s3-docker/
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+        # env:
+        #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
         with:
           dist-folder: ./dist
           bucket: 'gh-actions-009'
