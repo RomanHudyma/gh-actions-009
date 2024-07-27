@@ -1,4 +1,4 @@
-name: 'Deploy to AWS S3'
+name: 'Deploy to AWS S3 (Docker Action)'
 description: 'Deploy website via AWS S3.'
 inputs:
   bucket:
